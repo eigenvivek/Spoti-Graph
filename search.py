@@ -113,6 +113,11 @@ def write_edgelist(artist, limit=5, min_popularity=65, verbose=False, file_ident
     connections = {}
     metadata = {}
 
+    # Get the input artist's name
+    if file_identifier is None:
+        artist = scrapper.artist(uri)
+        file_identifier = artist['name']
+
     # Run the search
     _get_related_artists(artist,
                          connections,
