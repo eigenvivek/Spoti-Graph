@@ -8,6 +8,7 @@ from credentials import CLIENT_ID, CLIENT_SECRET
 
 
 def setup_scrapper(client_id, client_secret):
+    """Return a authenticated Spotify object."""
     client_credentials_manager = SpotifyClientCredentials(
         client_id, client_secret)
     spotify = spotipy.Spotify(
@@ -17,6 +18,7 @@ def setup_scrapper(client_id, client_secret):
 
 
 def _get_artist_metadata(uri, scrapper, attributes):
+    """Return well formatted metadata. Fields of interest are specified in `attributes`."""
 
     # Search for the artist
     artist = scrapper.artist(uri)
@@ -83,6 +85,8 @@ def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit
 
 
 def _to_edgelist(connections, fname):
+    """Write dictionary of connections to a NetworkX-compatible weighted edgelist."""
+
     with open('{}/{}.edgelist'.format('derivatives', fname), 'a') as f:
         for artist, values in connections.items():
             for related_arist, weight in values:
@@ -90,12 +94,15 @@ def _to_edgelist(connections, fname):
 
 
 def _to_pickle(metadata, fname):
+    """Pickle dictionary of metadata."""
+
     with open('{}/{}.pkl'.format('derivatives', fname), 'wb') as f:
         pickle.dump(metadata, f, pickle.HIGHEST_PROTOCOL)
 
 
-def write_edgelist(artist, file_identifier, limit=5, min_popularity=65, verbose=False):
+def write_edgelist(artist, limit=5, min_popularity=65, verbose=False, file_identifier=None):
     """
+    Main function for constructing graph of related artists.
     `artist` should be a Spotify URI.
     """
 
