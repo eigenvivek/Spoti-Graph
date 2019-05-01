@@ -80,21 +80,19 @@ def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit
                              metadata, attributes, scrapper, limit, min_popularity)
 
 
-def _to_edgelist(connections, outpath):
-
-    with open(outpath, 'a') as f:
-
+def _to_edgelist(connections, fname):
+    with open('{}/{}.edgelist'.format('derivatives', fname), 'a') as f:
         for artist, values in connections.items():
             for related_arist, weight in values:
                 f.write("{} {} {}\n".format(artist, related_arist, weight))
 
 
-def _to_pickle(metadata, name):
-    with open('{}.pkl'.format(name), 'wb') as f:
+def _to_pickle(metadata, fname):
+    with open('{}/{}.pkl'.format('derivatives', fname), 'wb') as f:
         pickle.dump(metadata, f, pickle.HIGHEST_PROTOCOL)
 
 
-def write_edgelist(artist, limit=5, min_popularity=65):
+def write_edgelist(artist, file_identifier, limit=5, min_popularity=65):
     """
     `artist` should be a Spotify URI.
     """
@@ -112,6 +110,6 @@ def write_edgelist(artist, limit=5, min_popularity=65):
 
     # Save the outputs
     print("Saving edgelist...")
-    _to_edgelist(connections, outpath='spotify.edgelist')
+    _to_edgelist(connections, fname='{}'.format(file_identifier))
     print("Saving attributes...")
-    _to_pickle(metadata, name='attributes')
+    _to_pickle(metadata, fname='{}_attributes'.format(file_identifier))
