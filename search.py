@@ -32,7 +32,7 @@ def _get_artist_metadata(uri, scrapper, attributes):
     return artist_metadata
 
 
-def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit, min_popularity):
+def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit, min_popularity, verbose):
     """Recursive implementation of depth-first search."""
 
     # Add input artist's attributes to metadata
@@ -41,7 +41,8 @@ def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit
 
     # Get up to `limit` related artists and associated metadata, organized in a list
     related = scrapper.artist_related_artists(uri)
-    pprint("PARENT {}:".format(metadata[uri]['name']))
+    if verbose:
+        pprint("current: {}".format(metadata[uri]['name']))
     related = related['artists'][0:limit]
 
     # Iterate through related artists...
@@ -49,8 +50,9 @@ def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit
 
         # 1a. Skip unpopular artists
         if int(artist['popularity']) < min_popularity:
-            print("    {} is unpopular ({})".format(
-                artist['name'], artist['popularity']))
+            if verbose:
+                print("    {} is unpopular ({})".format(
+                    artist['name'], artist['popularity']))
             continue
 
         # 1b. Skip artists already adjacent to the input artist
@@ -76,8 +78,8 @@ def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit
             related_artist_uri, scrapper=scrapper, attributes=attributes)
 
         # 4. Recursively call `_get_related_artists`
-        _get_related_artists(related_artist_uri, connections,
-                             metadata, attributes, scrapper, limit, min_popularity)
+        _get_related_artists(related_artist_uri, connections, metadata,
+                             attributes, scrapper, limit, min_popularity, verbose)
 
 
 def _to_edgelist(connections, fname):
@@ -92,7 +94,7 @@ def _to_pickle(metadata, fname):
         pickle.dump(metadata, f, pickle.HIGHEST_PROTOCOL)
 
 
-def write_edgelist(artist, file_identifier, limit=5, min_popularity=65):
+def write_edgelist(artist, file_identifier, limit=5, min_popularity=65, verbose=False):
     """
     `artist` should be a Spotify URI.
     """
@@ -105,8 +107,14 @@ def write_edgelist(artist, file_identifier, limit=5, min_popularity=65):
     metadata = {}
 
     # Run the search
-    _get_related_artists(artist, connections, metadata, attributes=['name', 'popularity'],
-                         scrapper=spotify, limit=limit, min_popularity=min_popularity)
+    _get_related_artists(artist,
+                         connections,
+                         metadata,
+                         attributes=['name', 'popularity'],
+                         scrapper=spotify,
+                         limit=limit,
+                         min_popularity=min_popularity,
+                         verbose=verbose)
 
     # Save the outputs
     print("Saving edgelist...")
