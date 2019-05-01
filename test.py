@@ -1,5 +1,5 @@
 from search import write_edgelist
-from graph_io import get_graph
+from utils import get_graph
 from plot import plot
 
 
