@@ -11,5 +11,5 @@ def plot(G):
 
     pos_nodes = nx.spring_layout(G, k=0.15, iterations=20)
 
-    nx.draw_networkx(G, pos_nodes, labels=custom_node_attrs)
+    nx.draw_networkx(G, pos_nodes, edge_color='grey', labels=custom_node_attrs)
     plt.show()
