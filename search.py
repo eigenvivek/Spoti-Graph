@@ -35,6 +35,25 @@ def _get_artist_metadata(uri, attributes, scrapper):
 
 
 def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit, min_popularity, verbose):
+def _get_collaborators(uri, limit, attributes, scrapper):
+    """Find artists that the given artist has collaborated with."""
+
+    # Get the top tracks
+    top_tracks = scrapper.artist_top_tracks(uri)
+    top_tracks = top_tracks['tracks'][0:limit]
+
+    # Get the metadata for each artist and store in list
+    collaborators = []
+    for track in top_tracks:
+        for artist in track['artists']:
+            target = artist['uri']
+            if (target == uri) or (artist in collaborators):
+                continue
+
+            artist = scrapper.artist(target)
+            collaborators.append(artist)
+
+    return collaborators
     """Recursive implementation of depth-first search."""
 
     # Add input artist's attributes to metadata
