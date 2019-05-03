@@ -17,7 +17,7 @@ def setup_scrapper(client_id, client_secret):
     return spotify
 
 
-def _get_artist_metadata(uri, scrapper, attributes):
+def _get_artist_metadata(uri, attributes, scrapper):
     """Return well formatted metadata. Fields of interest are specified in `attributes`."""
 
     # Search for the artist
@@ -39,7 +39,7 @@ def _get_related_artists(uri, connections, metadata, attributes, scrapper, limit
 
     # Add input artist's attributes to metadata
     metadata[uri] = _get_artist_metadata(
-        uri, scrapper=scrapper, attributes=attributes)
+        uri, attributes=attributes, scrapper=scrapper)
 
     # Get up to `limit` related artists and associated metadata, organized in a list
     related = scrapper.artist_related_artists(uri)
