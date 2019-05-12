@@ -116,12 +116,18 @@ class NetworkMiner():
                 continue
 
             # 1b. Skip artists already adjacent to the input artist
-            if connections.get(artist['uri']):
-                continue
+            # TODO: find better way to check if edge exists
+            try:
+                neighbors = [adjacent_uri for adjacent_uri in connections[uri]]
+                if artist['uri'] in neighbors:
+                    continue
+            except:
+                pass
 
             # 2. Write related artist and weight to connections
             input_artist_uri = str(uri)         # URI of the input artist
             related_artist_uri = artist['uri']  # URI of the related artist
+            # TODO: find better way of initializing new keys in dictionary
             try:
                 connections[input_artist_uri] += [related_artist_uri]
             except KeyError:
