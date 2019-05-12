@@ -4,11 +4,9 @@
 Spoti-Graph allows you to construct and analyze networks of related artists on Spotify!
 
 ## Overview
-Spoti-Graph interfaces with the [Spotify Web API](https://developer.spotify.com/documentation/web-api/) to obtain all related artists.
-You provide a starting artist, and the program executes a depth-first search to find neighbors.
-Two artists are conneced by an edge if they have collaborated on a popular song or if Spotify lists them as related.
+Spoti-Graph interfaces with the [Spotify Web API](https://developer.spotify.com/documentation/web-api/) to obtain all related artists. You provide a starting artist, and the program executes a depth-first search to find neighbors. Two artists are connected by an edge if they have collaborated on a popular song or if Spotify lists them as related.
 
-## Demo
+## Installation & Demo
 To run install the package, execute the following:
 ```
 git clone https://github.com/v715/Spoti-Graph
