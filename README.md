@@ -18,6 +18,6 @@ pip install -r requirements.txt
 
 At this point, you'll need to get authentifcation from the Spofity API. See [here]() for instructions on how to do that. Make a new file called `credentials.py` in the main directory and store your `Client ID` and `Client ID Secret` in it.
 
-Run the demo using `python ./demo/main.py`. Here's the result!
+Run the demo using `python demo.py`. Here's the result!
 
 ![demo](demo/farruko.png)
