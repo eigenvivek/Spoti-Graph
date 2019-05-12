@@ -19,4 +19,4 @@ if __name__ == '__main__':
 
     G = get_graph('derivatives/{}_attributes.pkl'.format(fname),
                   'derivatives/{}.edgelist'.format(fname))
-    plot(G)
+    plot(G, fname='./derivatives/demo')

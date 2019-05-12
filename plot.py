@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 
-def plot(G):
+def plot(G, fname=None):
 
     node_attrs = nx.get_node_attributes(G, 'name')
     custom_node_attrs = {}
@@ -12,4 +12,8 @@ def plot(G):
     pos_nodes = nx.spring_layout(G, k=0.15, iterations=20)
 
     nx.draw_networkx(G, pos_nodes, edge_color='grey', labels=custom_node_attrs)
+
+    if fname is not None:
+        plt.savefig(fname)
+
     plt.show()
