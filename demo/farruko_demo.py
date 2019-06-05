@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     miner.write_edgelist(artist=uri, fname=fname)
 
-    G = get_graph('derivatives/{}_attributes.pkl'.format(fname),
-                  'derivatives/{}.edgelist'.format(fname))
+    G = get_graph('../derivatives/{}_attributes.pkl'.format(fname),
+                  '../derivatives/{}.edgelist'.format(fname))
 
-    plot(G, fname='./demo/farruko')
+    plot(G, fname='farruko')
