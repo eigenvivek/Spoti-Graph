@@ -87,6 +87,7 @@ class NetworkMiner():
         explored, queue = set(), [uri]
         explored.add(uri)
 
+        # While there are artists in the queue:
         while queue:
 
             # Get the leftmost artist in the queue
@@ -95,7 +96,7 @@ class NetworkMiner():
             # Add artist's attributes to metadata
             metadata[uri] = self._get_artist_metadata(uri, attributes=attributes)
             if self.verbose:
-                # Output looks like: "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
+                # Verbose output: "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
                 msg = "Node {}: {} (popularity = {})".format(
                     len(metadata.keys()),
                     metadata[uri]['name'],
@@ -103,13 +104,13 @@ class NetworkMiner():
                 )
                 print(msg)
 
-            # Get up to `self.breadth_limit` related artists and associated metadata, organized in a list
+            # Get up to `self.breadth_limit` related artists
             related = self.scrapper.artist_related_artists(uri)
             related = related['artists'][0:self.breadth_limit]
+            related_uri = [artist['uri'] for artist in related]
 
             # Get up to `self.breadth_limit` collaborators and add unique artists to `related`
             if self.include_collaborators:
-                related_uri = [artist['uri'] for artist in related]
                 collaborators = self._get_collaborators(uri)
                 for artist in collaborators:
                     if artist['uri'] not in related_uri:
