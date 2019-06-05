@@ -22,12 +22,11 @@ class NetworkMiner():
         self.scrapper = self._setup_scrapper(client_id, client_secret)
 
         # Search paremeters
-        self.include_collaborators=include_collaborators
-        self.breadth_limit=breadth_limit
-        self.max_pop_size=max_pop_size
-        self.min_popularity=min_popularity
-        self.verbose=verbose
-
+        self.include_collaborators = include_collaborators
+        self.breadth_limit = breadth_limit
+        self.max_pop_size = max_pop_size
+        self.min_popularity = min_popularity
+        self.verbose = verbose
 
     def _setup_scrapper(self, CLIENT_ID, CLIENT_SECRET):
         """Initialize Spotify object with proper authentification."""
@@ -35,7 +34,6 @@ class NetworkMiner():
         spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
         return spotify
-
 
     def _get_artist_metadata(self, uri, attributes):
         """Return well formatted metadata. Fields of interest are specified in `attributes`."""
@@ -52,7 +50,6 @@ class NetworkMiner():
                 print("{} is not a valid key".format(attr))
 
         return artist_metadata
-
 
     def _get_collaborators(self, uri):
         """Find artists that the given artist has collaborated with."""
@@ -73,7 +70,6 @@ class NetworkMiner():
                 collaborators.append(artist)
 
         return collaborators
-
 
     def _get_related_artists(
         self,
@@ -159,7 +155,6 @@ class NetworkMiner():
                 if len(explored) == self.max_pop_size:
                     raise RuntimeError("Maximum population size reached.")
 
-
     def _to_edgelist(self, connections, fname):
         """Write dictionary of connections to a NetworkX-compatible weighted edgelist."""
 
@@ -168,13 +163,11 @@ class NetworkMiner():
                 for related_arist in values:
                     f.write("{} {}\n".format(artist, related_arist))
 
-
     def _to_pickle(self, metadata, fname):
         """Pickle dictionary of metadata."""
 
         with open('{}/{}.pkl'.format('derivatives', fname), 'wb') as f:
             pickle.dump(metadata, f, pickle.HIGHEST_PROTOCOL)
-
 
     def write_edgelist(
         self,
