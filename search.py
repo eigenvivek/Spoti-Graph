@@ -2,6 +2,8 @@ import pickle
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
+from requests.exceptions import ConnectionError
+
 
 class NetworkMiner():
 
@@ -192,8 +194,10 @@ class NetworkMiner():
                 metadata,
                 attributes=attributes,
             )
-        except RuntimeError as error:
+        except ConnectionError as error:
             print(repr(error))
+            print("Saving current progress...")
+            pass
 
         # Save the outputs
         print("Saving edgelist...")
