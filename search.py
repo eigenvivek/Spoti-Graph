@@ -80,65 +80,73 @@ class NetworkMiner():
         metadata,
         attributes,
     ):
-        """Recursive implementation of depth-first search."""
+        """Iterative implementation of breadth-first search."""
 
-        if len(metadata.keys()) == self.max_pop_size:
-            raise RuntimeError("Maximum population size reached.")
+        explored, queue = set(), [uri]
+        explored.add(uri)
 
-        # Add input artist's attributes to metadata
-        metadata[uri] = self._get_artist_metadata(uri, attributes=attributes)
-        if self.verbose:
-            # "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
-            msg = "Node {}: {} ({})".format(len(metadata.keys()),
-                                metadata[uri]['name'], metadata[uri]['popularity'])
-            print(msg)
+        while queue:
 
-        # Get up to `self.breadth_limit` related artists and associated metadata, organized in a list
-        related = self.scrapper.artist_related_artists(uri)
-        related = related['artists'][0:self.breadth_limit]
+            # Get the leftmost artist in the queue
+            uri = queue.pop(0)
 
-        # Get up to `self.breadth_limit` collaborators and add unique artists to `related`
-        if self.include_collaborators:
-            collaborators = self._get_collaborators(uri, attributes=attributes)
-            related_uri = [artist['uri'] for artist in related]
-            for artist in collaborators:
-                if artist['uri'] not in related_uri:
-                    related.append(artist)
+            # Add artist's attributes to metadata
+            metadata[uri] = self._get_artist_metadata(uri, attributes=attributes)
+            if self.verbose:
+                # Output looks like: "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
+                msg = "Node {}: {} (popularity = {})".format(
+                    len(metadata.keys()),
+                    metadata[uri]['name'],
+                    metadata[uri]['popularity']
+                )
+                print(msg)
 
-        # Iterate through related artists...
-        for artist in related:
+            # Get up to `self.breadth_limit` related artists and associated metadata, organized in a list
+            related = self.scrapper.artist_related_artists(uri)
+            related = related['artists'][0:self.breadth_limit]
 
-            # 1a. Skip unpopular artists
-            if int(artist['popularity']) < self.min_popularity:
-                if self.verbose:
-                    msg = "\t{} is unpopular ({})".format(artist['name'], artist['popularity'])
-                    print(msg)
-                continue
+            # Get up to `self.breadth_limit` collaborators and add unique artists to `related`
+            if self.include_collaborators:
+                collaborators = self._get_collaborators(uri, attributes=attributes)
+                related_uri = [artist['uri'] for artist in related]
+                for artist in collaborators:
+                    if artist['uri'] not in related_uri:
+                        related.append(artist)
 
-            # 1b. Skip artists already adjacent to the input artist
-            # TODO: find better way to check if edge exists
-            try:
-                neighbors = [adjacent_uri for adjacent_uri in connections[uri]]
-                if artist['uri'] in neighbors:
+            # Iterate through related artists...
+            for artist in related:
+
+                # 1a. Skip unpopular artists
+                if int(artist['popularity']) < self.min_popularity:
+                    if self.verbose:
+                        msg = "\t{} is unpopular ({})".format(artist['name'], artist['popularity'])
+                        print(msg)
                     continue
-            except:
-                pass
 
-            # 2. Write related artist and weight to connections
-            input_artist_uri = str(uri)         # URI of the input artist
-            related_artist_uri = artist['uri']  # URI of the related artist
-            # TODO: find better way of initializing new keys in dictionary
-            try:
-                connections[input_artist_uri] += [related_artist_uri]
-            except KeyError:
-                connections[input_artist_uri] = [related_artist_uri]
+                # 1b. Skip artists that have already been added to the network
+                if artist['uri'] in explored:
+                    continue
 
-            # 3. Save the related artist's attributes
-            metadata[related_artist_uri] = self._get_artist_metadata(
-                related_artist_uri, attributes=attributes)
+                # 2. Write related artist and weight to connections
+                input_artist_uri = str(uri)         # URI of the input artist
+                related_artist_uri = artist['uri']  # URI of the related artist
+                # TODO: find better way of initializing new keys in dictionary
+                try:
+                    connections[input_artist_uri] += [related_artist_uri]
+                except KeyError:
+                    connections[input_artist_uri] = [related_artist_uri]
 
-            # 4. Recursively call `_get_related_artists`
-            self._get_related_artists(related_artist_uri, connections, metadata, attributes=attributes)
+                # 3. Save the related artist's attributes
+                metadata[related_artist_uri] = self._get_artist_metadata(
+                    related_artist_uri, attributes=attributes)
+
+                # 4. Add the artist's uri to the set of explored artists and to the queue
+                explored.add(artist['uri'])
+                queue.append(artist['uri'])
+
+                # 5. Check if the max_pop_size has been hit
+                if len(explored) == self.max_pop_size:
+                    break
 
 
     def _to_edgelist(self, connections, fname):
