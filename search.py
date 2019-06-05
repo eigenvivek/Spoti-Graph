@@ -1,8 +1,9 @@
 import pickle
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-
 from requests.exceptions import ConnectionError
+
+from credentials import client_id, client_secret
 
 
 class NetworkMiner():
@@ -14,9 +15,11 @@ class NetworkMiner():
         max_pop_size=100,
         min_popularity=65,
         verbose=True,
+        client_id=client_id,
+        client_secret=client_secret,
     ):
-        # Object to interface with Spotify interface
-        self.scrapper = self._setup_scrapper()
+        # Object to interface with Spotify API
+        self.scrapper = self._setup_scrapper(client_id, client_secret)
 
         # Search paremeters
         self.include_collaborators=include_collaborators
@@ -26,12 +29,9 @@ class NetworkMiner():
         self.verbose=verbose
 
 
-    def _setup_scrapper(self):
+    def _setup_scrapper(self, CLIENT_ID, CLIENT_SECRET):
         """Initialize Spotify object with proper authentification."""
-
-        from credentials import CLIENT_ID, CLIENT_SECRET
-
-        client_credentials_manager = SpotifyClientCredentials(CLIENT_ID, CLIENT_SECRET)
+        client_credentials_manager = SpotifyClientCredentials(client_id, client_secret)
         spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
         return spotify
