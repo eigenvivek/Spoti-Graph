@@ -98,7 +98,7 @@ class NetworkMiner():
             if self.verbose:
                 # Verbose output: "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
                 msg = "Node {}: {} (popularity = {})".format(
-                    len(metadata.keys()),
+                    len(explored),
                     metadata[uri]['name'],
                     metadata[uri]['popularity']
                 )
@@ -146,6 +146,14 @@ class NetworkMiner():
                 # 4. Add the artist's uri to the set of explored artists and to the queue
                 explored.add(artist['uri'])
                 queue.append(artist['uri'])
+                if self.verbose:
+                    # Verbose output: "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
+                    msg = "Node {}: {} (popularity = {})".format(
+                        len(explored),
+                        metadata[related_artist_uri]['name'],
+                        metadata[related_artist_uri]['popularity']
+                    )
+                    print(msg)
 
                 # 5. Check if the max_pop_size has been hit
                 if len(explored) == self.max_pop_size:
