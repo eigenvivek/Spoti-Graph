@@ -148,7 +148,7 @@ class NetworkMiner():
 
                 # 5. Check if the max_pop_size has been hit
                 if len(explored) == self.max_pop_size:
-                    break
+                    raise RuntimeError("Maximum population size reached.")
 
 
     def _to_edgelist(self, connections, fname):
@@ -194,10 +194,11 @@ class NetworkMiner():
                 metadata,
                 attributes=attributes,
             )
+        except RuntimeError as error:
+            print(repr(error))
         except ConnectionError as error:
             print(repr(error))
             print("Saving current progress...")
-            pass
 
         # Save the outputs
         print("Saving edgelist...")
