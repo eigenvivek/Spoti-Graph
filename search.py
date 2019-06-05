@@ -93,7 +93,7 @@ class NetworkMiner():
             metadata[uri] = self._get_artist_metadata(uri, attributes=attributes)
             if self.verbose:
                 # Verbose output: "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
-                msg = "Node {}: {} (popularity = {})".format(
+                msg = "Node {}: {} ({})".format(
                     len(explored),
                     metadata[uri]['name'],
                     metadata[uri]['popularity']
@@ -144,7 +144,7 @@ class NetworkMiner():
                 queue.append(artist['uri'])
                 if self.verbose:
                     # Verbose output: "Node <NUMBER>: <ARTIST> (<POPULARITY>)"
-                    msg = "Node {}: {} (popularity = {})".format(
+                    msg = "Node {}: {} ({})".format(
                         len(explored),
                         metadata[related_artist_uri]['name'],
                         metadata[related_artist_uri]['popularity']
