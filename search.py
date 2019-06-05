@@ -54,7 +54,7 @@ class NetworkMiner():
         return artist_metadata
 
 
-    def _get_collaborators(self, uri, attributes):
+    def _get_collaborators(self, uri):
         """Find artists that the given artist has collaborated with."""
 
         # Get the top tracks
@@ -109,8 +109,8 @@ class NetworkMiner():
 
             # Get up to `self.breadth_limit` collaborators and add unique artists to `related`
             if self.include_collaborators:
-                collaborators = self._get_collaborators(uri, attributes=attributes)
                 related_uri = [artist['uri'] for artist in related]
+                collaborators = self._get_collaborators(uri)
                 for artist in collaborators:
                     if artist['uri'] not in related_uri:
                         related.append(artist)
