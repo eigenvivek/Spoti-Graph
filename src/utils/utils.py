@@ -2,7 +2,7 @@ import pickle
 import networkx as nx
 
 
-def get_graph(attributes='attributes.pkl', edgelist='spotify.edgelist'):
+def get_graph(attributes, edgelist):
 
     with open(attributes, 'rb') as f:
         attributes = pickle.load(f)
