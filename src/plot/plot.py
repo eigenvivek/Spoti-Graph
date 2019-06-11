@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 
-def plot(G, fname=None):
+def plot_graph(G, fname=None):
 
     node_attrs = nx.get_node_attributes(G, 'name')
     custom_node_attrs = {}
